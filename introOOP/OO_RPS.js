@@ -144,7 +144,7 @@ function createHuman() {
       let choice;
 
       while (true) {
-        console.log('Please choose rock, scissors, paper, lizard or spock:');
+        console.log('\nPlease choose rock, scissors, paper, lizard or spock:');
         choice = readline.question();
 
         if (['rock', 'paper', 'scissors', 'lizard', 'spock'].includes(choice)) break;
