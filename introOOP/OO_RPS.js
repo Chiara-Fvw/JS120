@@ -2,60 +2,6 @@ const readline = require('readline-sync');
 
 const prompt = (message) => console.log(`=> ${message}`);
 
-function createPlayer() {
-  return {
-    move: null,
-    pointsCounter : 0,
-  };
-}
-
-function createComputer() {
-  let playerObject = createPlayer();
-
-  let computerObject = {
-    choose() {
-      const movements = ['lizard', 'paper', 'rock', 'scissors', 'spock'];
-      let choices = [];
-
-      for (let idx = 0; idx < movements.length; idx++) {
-        let currentMove = movements[idx];
-        if (RSPGame.historyAnalysis('computer', currentMove) < 60) {
-          choices.push(currentMove);
-        }
-        choices = choices.concat(movements);
-      }
-
-      let randomIndex = Math.floor(Math.random() * choices.length);
-
-      this.move = choices[randomIndex];
-    },
-  };
-  return Object.assign(playerObject, computerObject);
-}
-
-function createHuman() {
-  let playerObject = createPlayer();
-
-  let humanObject = {
-    choose() {
-      let choice;
-
-      while (true) {
-        console.log('');
-        prompt('Please choose rock, scissors, paper, lizard or spock:');
-        choice = readline.question().toLowerCase();
-
-        if (['rock', 'paper', 'scissors', 'lizard', 'spock'].includes(choice)) break;
-        console.log('Sorry, invalid choice.');
-      }
-
-      this.move = choice;
-    },
-  };
-
-  return Object.assign(playerObject, humanObject);
-}
-
 const RSPGame = {
   human: createHuman(),
   computer: createComputer(),
@@ -103,7 +49,7 @@ const RSPGame = {
 
   historyAnalysis(player, move) {
     //nº of times the player chose the movement
-    let allMove = this.history.filter(round => round[1] === move).length; 
+    let allMove = this.history.filter(round => round[1] === move).length;
     //nº of times the player lost when chose the movement
     let lossByMove = this.history.filter(round => round[1] === move && round[2] !== player && round[2] !== 'tie').length;
     return allMove > 0 ? (lossByMove * 100) / allMove : 0;
@@ -158,7 +104,7 @@ const RSPGame = {
             this.computer.pointsCounter >= 5) break;
       }
       this.displayGameWinner();
-      
+
       if (!this.playAgain()) break;
     }
 
@@ -171,10 +117,63 @@ const RSPGame = {
     while (!['yes', 'no', 'y', 'n'].includes(answer.toLowerCase())) {
       prompt('Invalid answer, please type y or n');
       answer = readline.question();
-    } 
+    }
     return (answer.toLowerCase()[0] === 'y') || (answer.toLowerCase() === 'yes');
   },
 };
 
+function createPlayer() {
+  return {
+    move: null,
+    pointsCounter : 0,
+  };
+}
+
+function createComputer() {
+  let playerObject = createPlayer();
+
+  let computerObject = {
+    choose() {
+      const movements = ['lizard', 'paper', 'rock', 'scissors', 'spock'];
+      let choices = [];
+
+      for (let idx = 0; idx < movements.length; idx++) {
+        let currentMove = movements[idx];
+        if (RSPGame.historyAnalysis('computer', currentMove) < 60) {
+          choices.push(currentMove);
+        }
+        choices = choices.concat(movements);
+      }
+
+      let randomIndex = Math.floor(Math.random() * choices.length);
+
+      this.move = choices[randomIndex];
+    },
+  };
+  return Object.assign(playerObject, computerObject);
+}
+
+function createHuman() {
+  let playerObject = createPlayer();
+
+  let humanObject = {
+    choose() {
+      let choice;
+
+      while (true) {
+        console.log('');
+        prompt('Please choose rock, scissors, paper, lizard or spock:');
+        choice = readline.question().toLowerCase();
+
+        if (['rock', 'paper', 'scissors', 'lizard', 'spock'].includes(choice)) break;
+        console.log('Sorry, invalid choice.');
+      }
+
+      this.move = choice;
+    },
+  };
+
+  return Object.assign(playerObject, humanObject);
+}
 
 RSPGame.play();
