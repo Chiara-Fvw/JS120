@@ -3,12 +3,15 @@ const readline = require('readline-sync');
 const prompt = (message) => console.log(`=> ${message}`);
 
 const RSPGame = {
+  WIN_SCORE: 5,
   human: createHuman(),
   computer: createComputer(),
   history: [], //0 human, 1 computer, 2 winner (idx = round).
 
   displayWelcomeMessage() {
     console.log('Welcome to Rock, Paper, Scissors, Lizard and Spock!');
+    console.log(`The player who first get ${this.WIN_SCORE} points, wins the game.`);
+    console.log("Let's play!");
   },
 
   executeRound() {
@@ -20,6 +23,13 @@ const RSPGame = {
     console.log(`You chose: ${this.human.move}`);
     console.log(`Computer chose: ${this.computer.move}`);
 
+    this.displayRoundWinner(humanMove, computerMove);
+
+    this.history[this.history.length - 1]
+      .push(this.identifyWinner(humanMove, computerMove));
+  },
+
+  displayRoundWinner(humanMove, computerMove) {
     if (this.identifyWinner(humanMove, computerMove) === 'human') {
       this.human.pointsCounter += 1;
       console.log('*** You win the round! ***');
@@ -29,8 +39,6 @@ const RSPGame = {
     } else {
       console.log("*** It's a tie! ***");
     }
-    this.history[this.history.length - 1]
-      .push(this.identifyWinner(humanMove, computerMove));
   },
 
   identifyWinner(humanMove, computerMove) {
@@ -45,14 +53,6 @@ const RSPGame = {
     } else {
       return 'computer';
     }
-  },
-
-  historyAnalysis(player, move) {
-    //nº of times the player chose the movement
-    let allMove = this.history.filter(round => round[1] === move).length;
-    //nº of times the player lost when chose the movement
-    let lossByMove = this.history.filter(round => round[1] === move && round[2] !== player && round[2] !== 'tie').length;
-    return allMove > 0 ? (lossByMove * 100) / allMove : 0;
   },
 
   displayHistory() {
@@ -100,8 +100,8 @@ const RSPGame = {
         this.computer.choose();
         this.executeRound();
         this.displayPoints();
-        if (this.human.pointsCounter >= 5 ||
-            this.computer.pointsCounter >= 5) break;
+        if (this.human.pointsCounter >= this.WIN_SCORE ||
+            this.computer.pointsCounter >= this.WIN_SCORE) break;
       }
       this.displayGameWinner();
 
@@ -139,7 +139,7 @@ function createComputer() {
 
       for (let idx = 0; idx < movements.length; idx++) {
         let currentMove = movements[idx];
-        if (RSPGame.historyAnalysis('computer', currentMove) < 60) {
+        if (this.computerLossRate('computer', currentMove) < 60) {
           choices.push(currentMove);
         }
         choices = choices.concat(movements);
@@ -148,6 +148,14 @@ function createComputer() {
       let randomIndex = Math.floor(Math.random() * choices.length);
 
       this.move = choices[randomIndex];
+    },
+
+    computerLossRate(player, move) {
+      //nº of times the player chose the movement
+      let allMove = RSPGame.history.filter(round => round[1] === move).length;
+      //nº of times the player lost when chose the movement
+      let lossByMove = RSPGame.history.filter(round => round[1] === move && round[2] !== player && round[2] !== 'tie').length;
+      return allMove > 0 ? (lossByMove * 100) / allMove : 0;
     },
   };
   return Object.assign(playerObject, computerObject);
@@ -162,10 +170,32 @@ function createHuman() {
 
       while (true) {
         console.log('');
-        prompt('Please choose rock, scissors, paper, lizard or spock:');
+        prompt('Please choose rock (r), scissors (sc), paper (p), lizard (l) or spock (sp):');
         choice = readline.question().toLowerCase();
 
-        if (['rock', 'paper', 'scissors', 'lizard', 'spock'].includes(choice)) break;
+        if (['rock', 'paper', 'scissors', 'lizard', 'spock', 'r', 'p', 'sc', 'sp', 'l'].includes(choice)) {
+          switch(choice) {
+            case 'r':
+              choice = 'rock';
+              break;
+            case 'p':
+              choice = 'paper';
+              break;
+            case 'sc':
+              choice = 'scissors';
+              break;
+            case 'l':
+              choice = 'lizard';
+              break;
+            case 'sp':
+              choice = 'spock';
+              break;
+            default:
+              break;
+          }
+          
+          break;
+        };
         console.log('Sorry, invalid choice.');
       }
 
