@@ -102,3 +102,7 @@ function assignProperty(obj, property, value) {
 
 let foo = {1: 1, 2: 2}
 
+//cannot tell the origin
+//copies all the elements and it is redundant and inefficient
+
+
