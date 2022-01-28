@@ -47,7 +47,7 @@ foo.incrementA();
 
 console.log(foo.a); */
 
-let cats = {
+/* let cats = {
   names: [ 'Butterscotch', 'Pudding', 'Fluffy' ],
   foo() {
     [1, 2, 3].forEach(function(number) {
@@ -56,8 +56,61 @@ let cats = {
   },
 };
 
-cats.foo();
+cats.foo(); */
 // Expected output:
 // 1: Butterscotch
 // 2: Pudding
 // 3: Fluffy
+
+/* const TESgames = {
+  titles: ['Arena', 'Daggerfall', 'Morrowind', 'Oblivion', 'Skyrim'],
+  seriesTitle: 'The Elder Scrolls',
+  listGames: function() {
+    this.titles.forEach(title => {
+      console.log(this.seriesTitle + ': ' + title);
+    });
+  }
+};
+
+TESgames.listGames(); */
+
+/* 
+let foo = {
+  a: 0,
+  incrementA: function() {
+    
+    function increment() {
+      this.a += 1;
+    }
+
+    increment.call(this);
+  }
+};
+
+foo.incrementA();
+foo.incrementA();
+foo.incrementA();
+
+console.log(foo.a); */
+
+let RECTANGLE = {
+  
+  area: function() {
+    return this.width * this.height;
+  },
+  perimeter: function() {
+    return 2 * (this.width + this.height);
+  },
+};
+
+function Rectangle(width, height) {
+  this.width = width;
+  this.height = height;
+  this.area = RECTANGLE.area();
+  this.perimeter = RECTANGLE.perimeter();
+}
+
+let rect1 = new Rectangle(2, 3);
+
+console.log(rect1.area);
+console.log(rect1.perimeter);
