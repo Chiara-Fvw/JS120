@@ -381,15 +381,10 @@ class Pet {
   constructor(type, name) {
     this.type = type;
     this.name = name;
-    this.adopted = false;
   }
 
   getPetDescription() {
     return `a ${this.type} named ${this.name}`;
-  }
-
-  adoption() {
-    this.adopted = true;
   }
 }
 
@@ -415,7 +410,6 @@ class Shelter {
   
   adopt(owner, pet) {
     owner.pets.push(pet);
-    pet.adoption();
     if (!this.adoptions[owner.name]) {
       this.adoptions[owner.name] = owner;
     }
@@ -431,7 +425,6 @@ class Shelter {
   
 }
 
-
 let butterscotch = new Pet('cat', 'Butterscotch');
 let pudding      = new Pet('cat', 'Pudding');
 let darwin       = new Pet('bearded dragon', 'Darwin');
@@ -439,6 +432,8 @@ let kennedy      = new Pet('dog', 'Kennedy');
 let sweetie      = new Pet('parakeet', 'Sweetie Pie');
 let molly        = new Pet('dog', 'Molly');
 let chester      = new Pet('fish', 'Chester');
+
+//further exploration
 let asta         = new Pet('dog', 'Asta');
 let laddie       = new Pet('dog', 'Laddie');
 let fluffy       = new Pet('cat', 'Fluffy');
@@ -450,7 +445,7 @@ let nana         = new Pet('dog', 'Nana');
 
 let phanson = new Owner('P Hanson');
 let bholmes = new Owner('B Holmes');
-let chiara = new Owner('C Fiorentini');
+let chiara  = new Owner('C Fiorentini');
 
 let shelter = new Shelter();
 shelter.adopt(phanson, butterscotch);
@@ -460,10 +455,11 @@ shelter.adopt(bholmes, kennedy);
 shelter.adopt(bholmes, sweetie);
 shelter.adopt(bholmes, molly);
 shelter.adopt(bholmes, chester);
+shelter.adopt(chiara, nana);
 shelter.printAdoptions();
 console.log(`${phanson.name} has ${phanson.numberOfPets()} adopted pets.`);
 console.log(`${bholmes.name} has ${bholmes.numberOfPets()} adopted pets.`);
-console.log(`The animal shelter has ${8} unadopted pets.`)
+//console.log(`${shelter.name} has ${shelter.numberOfPets()} unadopted pets.`)
 
 /* Further Exploration
 
@@ -493,4 +489,58 @@ Can you make these updates to your solution? Did you need to change your class s
       if(petObject.adopted === false) {
         console.log(petObject.getPetDescription());
       }
-    } */
+    } 
+*/
+
+/* 11. Banner Class
+
+Behold this incomplete class for constructing boxed banners.
+
+Complete this class so that the test cases shown below work as intended. You are free to add any properties you need.
+You may assume that the input will always fit in your terminal window.
+
+*/
+console.log('\nExercise 11: ');
+
+class Banner {
+  constructor(message) {
+    this.message = message;
+    this.messageLength = message.length;
+  }
+
+  displayBanner() {
+    console.log([this.horizontalRule(), this.emptyLine(), this.messageLine(), this.emptyLine(), this.horizontalRule()].join("\n"));
+  }
+
+  horizontalRule() {
+    return `+${'-'.repeat(this.messageLength + 2)}+`;
+  }
+
+  emptyLine() {
+    return `| ${' '.repeat(this.messageLength)} |`
+  }
+
+  messageLine() {
+    return `| ${this.message} |`
+  }
+}
+
+let banner1 = new Banner('To boldly go where no one has gone before.');
+banner1.displayBanner();
+/* 
++--------------------------------------------+
+|                                            |
+| To boldly go where no one has gone before. |
+|                                            |
++--------------------------------------------+
+*/
+let banner2 = new Banner('');
+banner2.displayBanner();
+
+/* 
++--+
+|  |
+|  |
+|  |
++--+  
+*/
