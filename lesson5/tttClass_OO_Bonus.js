@@ -31,6 +31,10 @@ class Square {
 
 class Board {
   constructor() {
+   this.reset();
+  }
+
+  reset() {
     this.squares = {};
     for (let counter = 1; counter <= 9; counter++) {
       this.squares[String(counter)] = new Square();
@@ -124,6 +128,19 @@ class TTTGame {
 
   play() {
     this.displayWelcomeMessage();
+    
+    while (true) {
+      this.playOneGame();
+      if (!this.playAgain()) break;
+
+      console.log("Let's play again!");
+    };
+
+    this.displayGoodbyeMessage();
+  }
+
+  playOneGame() {
+    this.board.reset();
     this.board.display();
 
     while (true) {
@@ -136,8 +153,23 @@ class TTTGame {
       this.board.displayWithClear();
     }
     this.board.displayWithClear();
-    this.displayResults();
-    this.displayGoodbyeMessage();
+    this.displayResults();    
+  }
+
+  playAgain() {
+    let answer;
+
+    while (true) {
+      answer = readline.question("Play again (y/n)? ").toLowerCase();
+
+      if (["y", "n"].includes(answer)) break;
+
+      console.log("Sorry, that's not a valid choice. ");
+      console.log("");
+    }
+
+    console.clear();
+    return answer === "y";
   }
 
   displayWelcomeMessage() {
@@ -215,5 +247,7 @@ class TTTGame {
   }
 }
 
-let game = new TTTGame();
+let game = new TTTGame(); 
 game.play();
+
+
