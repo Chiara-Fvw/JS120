@@ -24,10 +24,6 @@ class Square {
     return this.marker === Square.UNUSUED_SQUARE;
   }
 }
-//static not full implemented. Instead use:
-// Square.UNUSUED_SQUARE = " ";
-// Square.HUMAN_MARKER = "X";
-// Square.COMPUTER_MARKER = "O";
 
 class Board {
   constructor() {
@@ -79,6 +75,12 @@ class Board {
     });
 
     return markers.length;
+  }
+
+  hotRow(adversary, player) {
+    console.log(Square.UNUSUED_SQUARE);
+    return TTTGame.POSSIBLE_WINNING_ROWS.filter(row => this.countMarkersFor(adversary, row) === 2 &&
+                                                        this.countMarkersFor(player, row) === 0);
   }
 
   isFull() {
@@ -198,10 +200,22 @@ class TTTGame {
   computerMoves() {
     let validChoices = this.board.unusedSquares();
     let choice;
-    do {
-      choice = Math.floor((9 * Math.random()) + 1).toString();
-    } while (!validChoices.includes(choice));
-
+    
+    let potentialRow = this.board.hotRow(this.computer, this.human);
+    let dangerousRow = this.board.hotRow(this.human, this.computer);
+    
+    if (potentialRow.length > 0) {
+      choice = potentialRow[0].filter(square => validChoices.includes(square))[0];
+    } else if (dangerousRow.length > 0) {
+      choice = dangerousRow[0].filter(square => validChoices.includes(square))[0];
+    } else if (validChoices.includes('5')) {
+      choice = '5'; 
+    } else {
+      do {
+        choice = Math.floor((9 * Math.random()) + 1).toString();
+      } while (!validChoices.includes(choice));
+    }
+    
     this.board.markSquareAt(choice, this.computer.getMarker());
   }
 
@@ -251,3 +265,13 @@ let game = new TTTGame();
 game.play();
 
 
+/* 
+-   If any square is a potential winner
+    -   Pick that square.
+-   Else if any square is at risk, pick that square.
+    -   Pick that square.
+-   Else:
+    -   Pick a random square.
+
+
+*/
