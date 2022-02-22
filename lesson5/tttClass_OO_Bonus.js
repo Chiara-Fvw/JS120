@@ -66,7 +66,11 @@ class Board {
 
   unusedSquares() {
     let keys = Object.keys(this.squares);
-    return keys.filter(key => this.squares[key].isUnused());
+    return keys.filter(key => this.isUnusedSquare(key));
+  }
+
+  isUnusedSquare(key) {
+    return this.squares[key].isUnused();
   }
 
   countMarkersFor(player, keys) {
@@ -75,12 +79,6 @@ class Board {
     });
 
     return markers.length;
-  }
-
-  hotRow(adversary, player) {
-    console.log(Square.UNUSUED_SQUARE);
-    return TTTGame.POSSIBLE_WINNING_ROWS.filter(row => this.countMarkersFor(adversary, row) === 2 &&
-                                                        this.countMarkersFor(player, row) === 0);
   }
 
   isFull() {
@@ -198,51 +196,56 @@ class TTTGame {
   }
 
   computerMoves() {
-    let validChoices = this.board.unusedSquares();
-    let choice = this.offenseComputerMove(validChoices);
+    let choice = this.offensiveComputerMove();
     
     if (!choice) {
-      choice = this.defenseComputerMove(validChoices);
+      choice = this.defensiveComputerMove();
     }
     
     if (!choice) {
-      choice = this.pickCenterSquare(validChoices);
+      choice = this.pickCenterSquare();
     }
     
     if (!choice) {
-      choice = this.pickRandomSquare(validChoices);
+      choice = this.pickRandomSquare();
     }
     
     this.board.markSquareAt(choice, this.computer.getMarker());
   }
 
-  offenseComputerMove(validChoices) {
-    let potentialRow = this.board.hotRow(this.computer, this.human);
-    if (potentialRow.length > 0) {
-      return potentialRow[0].filter(square => validChoices.includes(square))[0];
-    }
-
-    return false;
+  offensiveComputerMove() {
+    return this.findCriticalSquare(this.computer);
   }
   
-  defenseComputerMove(validChoices) {
-    let dangerousRow = this.board.hotRow(this.human, this.computer);
-    if (dangerousRow.length > 0) {
-      return dangerousRow[0].filter(square => validChoices.includes(square))[0];
+  defensiveComputerMove() {
+    return this.findCriticalSquare(this.human);
+  }
+
+  findCriticalSquare(player) {
+    for (let idx = 0; idx < TTTGame.POSSIBLE_WINNING_ROWS.length; ++idx) {
+      let row = TTTGame.POSSIBLE_WINNING_ROWS[idx];
+      let key = this.criticalSquare(row, player);
+      if (key) return key;
     }
-    
-    return false;
+
+    return null;
+  }
+
+  criticalSquare(row, player) {
+    if (this.board.countMarkersFor(player, row) === 2) {
+      let index = row.findIndex(key => this.board.isUnusedSquare(key));
+      if (index >= 0) return row[index];
+    }
+
+    return null;
   }
 
   pickCenterSquare(validChoices) {
-    if (validChoices.includes('5')) {
-      return '5';
-    }
-
-    return false;
+    return this.board.isUnusedSquare("5") ? "5" : null;
   }
 
-  pickRandomSquare(validChoices) {
+  pickRandomSquare() {
+    let validChoices = this.board.unusedSquares();
     let choice;
 
     do {
