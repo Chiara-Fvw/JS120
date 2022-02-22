@@ -199,24 +199,57 @@ class TTTGame {
 
   computerMoves() {
     let validChoices = this.board.unusedSquares();
-    let choice;
+    let choice = this.offenseComputerMove(validChoices);
     
-    let potentialRow = this.board.hotRow(this.computer, this.human);
-    let dangerousRow = this.board.hotRow(this.human, this.computer);
+    if (!choice) {
+      choice = this.defenseComputerMove(validChoices);
+    }
     
-    if (potentialRow.length > 0) {
-      choice = potentialRow[0].filter(square => validChoices.includes(square))[0];
-    } else if (dangerousRow.length > 0) {
-      choice = dangerousRow[0].filter(square => validChoices.includes(square))[0];
-    } else if (validChoices.includes('5')) {
-      choice = '5'; 
-    } else {
-      do {
-        choice = Math.floor((9 * Math.random()) + 1).toString();
-      } while (!validChoices.includes(choice));
+    if (!choice) {
+      choice = this.pickCenterSquare(validChoices);
+    }
+    
+    if (!choice) {
+      choice = this.pickRandomSquare(validChoices);
     }
     
     this.board.markSquareAt(choice, this.computer.getMarker());
+  }
+
+  offenseComputerMove(validChoices) {
+    let potentialRow = this.board.hotRow(this.computer, this.human);
+    if (potentialRow.length > 0) {
+      return potentialRow[0].filter(square => validChoices.includes(square))[0];
+    }
+
+    return false;
+  }
+  
+  defenseComputerMove(validChoices) {
+    let dangerousRow = this.board.hotRow(this.human, this.computer);
+    if (dangerousRow.length > 0) {
+      return dangerousRow[0].filter(square => validChoices.includes(square))[0];
+    }
+    
+    return false;
+  }
+
+  pickCenterSquare(validChoices) {
+    if (validChoices.includes('5')) {
+      return '5';
+    }
+
+    return false;
+  }
+
+  pickRandomSquare(validChoices) {
+    let choice;
+
+    do {
+      choice = Math.floor((9 * Math.random()) + 1).toString();
+    } while (!validChoices.includes(choice));
+
+    return choice;
   }
 
   gameOver() {
@@ -263,15 +296,3 @@ class TTTGame {
 
 let game = new TTTGame(); 
 game.play();
-
-
-/* 
--   If any square is a potential winner
-    -   Pick that square.
--   Else if any square is at risk, pick that square.
-    -   Pick that square.
--   Else:
-    -   Pick a random square.
-
-
-*/
