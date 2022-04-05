@@ -236,4 +236,28 @@ foo.incrementA();
 
 //The value `foo.a`will still be 0. The execution context of the function increment is the global object. As there is no property `a` on it, this.a resolves to undefined and the property a of foo it is not incremented.
 
+function Dog(name, breed, weight) {
+  Object.setPrototypeOf(this, Dog.myPrototype)
+  this.name = name;
+  this.breed = breed;
+  this.weight = weight;
+}
 
+Dog.myPrototype = {
+  bark() {
+    console.log(this.weight > 20 ? 'Woof!' : 'Yip!');
+  }
+};
+
+let maxi = new Dog('Maxi', 'German Shepherd', 32);
+let dexter = new Dog('Dexter', 'Rottweiler', 50);
+let biggie = new Dog('Biggie', 'Whippet', 9);
+
+//maxi.bark(); // 'Woof!'
+
+console.log(Object.getPrototypeOf(maxi) === Dog.myPrototype); 
+console.log(maxi.constructor === Object);
+
+// the above true / the below false if setProtperty activated. VICEVERSA if it is not.
+console.log(Object.getPrototypeOf(maxi) === Dog.prototype);
+console.log(maxi.constructor === Dog );
