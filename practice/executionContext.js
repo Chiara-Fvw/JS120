@@ -92,7 +92,7 @@ foo.incrementA();
 foo.incrementA();
 
 console.log(foo.a); */
-
+/* 
 let RECTANGLE = {
   
   area: function() {
@@ -113,4 +113,19 @@ function Rectangle(width, height) {
 let rect1 = new Rectangle(2, 3);
 
 console.log(rect1.area);
-console.log(rect1.perimeter);
+console.log(rect1.perimeter); */
+
+global.foo = 5;
+if (isFinite(foo)) {
+  let bar = 3;
+  xyz = 5;
+  console.log(bar);
+}
+
+console.log('global' in global);
+console.log('foo' in global);
+console.log('isFinite' in global);
+console.log('bar' in global);
+console.log('xyz' in global);
+console.log('console' in global);
+console.log('log' in global);

@@ -218,7 +218,7 @@ const TESgames = {
 //NO. The code will output undefined: arena .... 
 // on line 210 within the callback function body, this loses its context and executes using implicitly the global object as the execution context. Therefore the output is undefined: title.
 
-let foo = {
+/* let foo = {
   a: 0,
   incrementA: function() {
     function increment() {
@@ -231,7 +231,7 @@ let foo = {
 
 foo.incrementA();
 foo.incrementA();
-foo.incrementA();
+foo.incrementA(); */
 // console.log(foo.a);
 
 //The value `foo.a`will still be 0. The execution context of the function increment is the global object. As there is no property `a` on it, this.a resolves to undefined and the property a of foo it is not incremented.
@@ -261,3 +261,128 @@ console.log(maxi.constructor === Object);
 // the above true / the below false if setProtperty activated. VICEVERSA if it is not.
 console.log(Object.getPrototypeOf(maxi) === Dog.prototype);
 console.log(maxi.constructor === Dog );
+
+
+
+console.log('************AQUIIIIII**********');
+
+/* 
+
++ Executives receive 20 days of vacation, 
++ managers receive 14 days, 
++ regular employees get 10 days, 
++ part-time employees get none.
+
+Full-time employees should have a takeVacation method that gets called when an employee takes some vacation. Part-time employees don't have this method.
+
+Executives work at a desk in a corner office, 
+managers work in a regular private office, 
+regular employees have a desk in the cubicle farm. 
+Part-time employees work in an open workspace with no reserved desk.
+
+Managers can delegate work, while ordinary full-time and part-time employees can not. 
+Any manager should be able to call a delegate method, but ordinary employees cannot.
+
+Use classes to create your design based on the application description. Your classes should show any inheritance relationships, mix-ins, and methods necessary to meet the requirements.
+
+This question is about designing object type relationships and how you organize your constructors, behaviors, and state. Your methods only need to provide enough detail to fulfill the requirements. In some cases, you may be able to omit the method body entirely. Don't include any functionality that we don't describe above. */
+
+const FullTime = { 
+  takeVacation() {}
+}
+
+
+function Employee(name, serialNumber) {
+    this.name = name;
+    this.serialNumber = serialNumber;
+}
+
+
+function Manager(name, serialNumber) {
+  Employee.call(this, name, serialNumber);
+  this.daysOfVacation = 14;
+  this.workSpace = 'Regular private office';
+}
+
+Manager.prototype = Object.create(Employee.prototype);
+Manager.prototype.constructor = Manager;
+Manager.prototype.delegate = function() {}
+Object.assign(Manager.prototype, FullTime);
+
+function Executive(name, serialNumber)  {
+  Manager.call(this, name, serialNumber);
+  this.daysOfVacation = 20;
+  this.workSpace = 'Desk in a corner office';
+}
+Executive.prototype = Object.create(Manager.prototype);
+Executive.prototype.consturctor = Executive;
+Executive.prototype.hire = function() {};
+Executive.prototype.fire = function() {};
+
+
+function Regular(name, serialNumber)  {
+  Employee.call(this, name, serialNumber);
+  this.daysOfVacation = 10;
+  this.workSpace = 'Desk in a cubicle farm';
+}
+Regular.prototype = Object.create(Employee.prototype);
+Regular.prototype.constructor = Regular;
+Object.assign(Regular.prototype, FullTime);
+
+function PartTime(name, serialNumber) {
+  Employee.call(this, name, serialNumber);
+  this.daysOfVacation = 0;
+  this.workSpace = 'Open space with no reserved desk';
+}
+
+PartTime.prototype = Object.create(Employee.prototype);
+PartTime.prototype.consturctor = PartTime;
+
+
+let pepe = new Executive('pepe', 234);
+pepe.takeVacation();
+console.log(pepe.daysOfVacation);
+
+
+console.log('++++++++++++++++++++++++++++++')
+
+function createPerson(name, age) {
+  return {
+    name,
+    age,
+    breathe() {    }
+  }
+};
+
+let carlos = createPerson('Carlos', 39);
+
+carlos.hasOwnProperty('breathe'); //true
+
+
+function Person(name, age) {
+  this.name = name;
+  this.age = age;
+}
+
+Person.prototype.breathe = function() {}
+
+let carlota = new Person('Carlota', 45);
+carlota.hasOwnProperty('breathe'); //false
+
+console.log(carlos.hasOwnProperty('breathe'));
+console.log(carlota.hasOwnProperty('breathe'));
+
+//////jdajksdjfkñfjkds
+
+let plane = {
+  passengers: 220
+};
+
+let flyingMachine = {
+  fly() {
+    console.log(`Off we go with ${this.passengers} passengers!`);
+  }
+};
+
+Object.setPrototypeOf(plane, flyingMachine);
+plane.fly();
